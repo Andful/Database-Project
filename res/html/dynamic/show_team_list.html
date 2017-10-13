@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teams</title>
+    {{template "include_css"}}
+    {{template "meta"}}
+</head>
+<body>
+    {{template "navbar" .Current}}
+    <h2>Teams</h2>
+    {{range .Teams}}
+    <a href="/team/{{.TeamId}}">{{.TeamId}}</a>
+    {{end}}
+    {{template "include_js"}}
+</body>
+</html>

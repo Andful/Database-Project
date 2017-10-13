@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Team.TeamId}}</title>
+    {{template "meta"}}
+    {{template "include_css"}}
+</head>
+<body>
+{{template "navbar" .User}}
+{{$selected := .Team}}
+<ul>
+    <li>team id: {{$selected.TeamId}}</li>
+    <li>mgr id: {{$selected.MgrId}}</li>
+    <li>mgr start date: {{$selected.MgrStartDate.Format "02/01/2006" }}</li>
+</ul>
+<h3>Team members</h3>
+{{range .Team.Employees}}
+<ul>
+    <li><a href="/user/{{.User.UserName}}">{{.User.UserName}}</a></li>
+</ul>
+{{end}}
+{{template "include_js"}}
+</body>
+</html>

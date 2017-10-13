@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"fmt"
 	"math/rand"
+	"strings"
 )
+
 func ServeStaticPage(filename string) func (http.ResponseWriter,*http.Request) {
 	return func (w http.ResponseWriter,r *http.Request){
 		fmt.Println()
@@ -34,4 +36,20 @@ func RandStringRunes(n int) string {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	return string(b)
+}
+
+func GetPostfix(prefix string,line string) string {
+	lineWithNoFront:=line[len(prefix):]
+	end:=strings.Index(lineWithNoFront,"/")
+	if end==-1 {
+		end=len(lineWithNoFront)
+	}
+	return lineWithNoFront[:end]
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }

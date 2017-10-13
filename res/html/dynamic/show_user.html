@@ -2,15 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{.UserName}}</title>
-    {{template "res/html/components/include_css.html"}}
+    <title>{{.Selected.UserName}}</title>
+    {{template "meta"}}
+    {{template "include_css"}}
 </head>
 <body>
+{{template "navbar" .Current}}
+{{$selected := .Selected}}
 <ul>
-    <li>user name: {{.UserName}}</li>
-    <li>phone number: {{.PhoneNumber}}</li>
-    <li>date login: {{.DateJoined.Format "02/01/2006" }}</li>
+    <li>user name: {{$selected.UserName}}</li>
+    <li>phone number: {{$selected.PhoneNumber}}</li>
+    <li>date login: {{$selected.DateJoined.Format "02/01/2006" }}</li>
+    {{if .Employee}}
+    <li>name:{{.Employee.Name}}</li>
+    <li>team: <a href="/team/{{.Employee.TeamId}}">{{.Employee.TeamId}}</a></li>
+    <li>id:{{.Employee.Id}}</li>
+    <li>address:{{.Employee.Address}}</li>
+    <li>salary:{{.Employee.Salary}}</li>
+    <h3>Schedule</h3>
+    <p>{{.Employee.Schedule}}</p>
+    {{end}}
 </ul>
-{{template "res/html/components/include_js.html"}}
+{{template "include_js"}}
 </body>
 </html>

@@ -12,6 +12,7 @@ import (
 	"html/template"
 	"time"
 	"math/rand"
+	"strconv"
 )
 
 const (
@@ -21,19 +22,111 @@ const (
 )
 
 var db *sql.DB = nil
+func ServeUsers(w http.ResponseWriter,r *http.Request) {
+	r.ParseForm()
+	postfix := GetPostfix("/user/",r.URL.Path)
+	var users struct{
+		Current *User
+		Selected *User
+		Employee *Employee
+		}
+	users.Current=GetUserFromRequest(r)
+	users.Selected=GetUserFromName(postfix)
+	users.Employee=GetEmployeeFromUser(users.Selected)
+	fmt.Println(users)
+
+	if users.Selected!=nil {
+		templ,err:=template.ParseFiles(
+			"res/html/dynamic/show_user.html",
+			"res/html/components/include_css.html",
+			"res/html/components/include_js.html",
+			"res/html/components/navbar.html",
+			"res/html/components/meta.html",
+				)
+		err = templ.Execute(w,users)
+		checkError(err)
+	} else {
+		http.NotFound(w,r)
+	}
+}
+func ServeTeamList(w http.ResponseWriter, r *http.Request){
+	var teamsCurrent struct{
+		Teams []Team
+		Current *User
+	}
+	teamsCurrent.Teams = GetTeamList()
+	teamsCurrent.Current = GetUserFromRequest(r)
+	templ,err:=template.ParseFiles(
+		"res/html/dynamic/show_team_list.html",
+		"res/html/components/include_css.html",
+		"res/html/components/include_js.html",
+		"res/html/components/navbar.html",
+		"res/html/components/meta.html",
+	)
+	checkError(err)
+	err = templ.Execute(w,teamsCurrent)
+	checkError(err)
+}
+
+func ServeTeam(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	r.ParseForm()
+	postfix := GetPostfix("/team/",r.URL.Path)
+	if(postfix==""){
+		ServeTeamList(w,r);
+		return;
+	}
+	var teamUser struct {
+		Team *Team
+		User *User
+	}
+	teamUser.User=GetUserFromRequest(r)
+	id,err:=strconv.ParseUint(postfix,10,32)
+	checkError(err)
+	teamUser.Team=GetTeamFromId(uint32(id))
+
+	if teamUser.Team!=nil {
+		templ,err:=template.ParseFiles(
+			"res/html/dynamic/show_team.html",
+			"res/html/components/include_css.html",
+			"res/html/components/include_js.html",
+			"res/html/components/navbar.html",
+			"res/html/components/meta.html",
+		)
+		err = templ.Execute(w,teamUser)
+		checkError(err)
+	} else {
+		http.NotFound(w,r)
+	}
+}
+
+func ServeLogout(w http.ResponseWriter, r *http.Request) {
+	expiration := time.Now().Add(365 * 24 * time.Hour)
+	newCookie := http.Cookie{
+		Name: "session",
+		Value:"",
+		Path:"/",
+		Expires:expiration,
+	}
+	w.Header().Add("Set-Cookie",newCookie.String())
+	http.Redirect(w, r, "/login/", 303)
+}
 
 func ServeLogin(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	r.ParseForm()
 	if(r.Method=="GET"){
+		cookie,err:=r.Cookie("session")
+		fmt.Println(cookie)
 		dat,err :=ioutil.ReadFile("res/html/static/login.html")
 		checkError(err)
 		fmt.Fprint(w,string(dat))
 	} else if(r.Method=="POST") {
 		username := r.FormValue("username")
 		password := []byte(r.FormValue("password"))
-		row := db.QueryRow("SELECT hashed_password,cookie FROM users WHERE username=$1", username)
+		row := db.QueryRow("SELECT password,cookie FROM users WHERE user_name=$1", username)
 		var str_hashed_password1 string
 		var cookie string
 		err = row.Scan(&str_hashed_password1, &cookie)
@@ -63,36 +156,41 @@ func ServeSignUp(w http.ResponseWriter, r *http.Request) {
 	} else if(r.Method=="POST") {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
+		phone_number :=r.FormValue("phone number")
+		date := time.Now().Local()
 		hashed_password, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		checkError(err)
 
-		usernameUsed:=false
-		err = db.QueryRow("SELECT EXISTS(SELECT username FROM users WHERE username=$1);",
-			username).Scan(&usernameUsed)
-		checkError(err)
-
-		if(usernameUsed){
-			fmt.Fprint(w,"username already used")
-			return
-		}
-
-		cookie := ""
-		isPresent :=true
-		//FIXME: might
 		for {
-			cookie = RandStringRunes(30)
-			fmt.Println(cookie)
-			err := db.QueryRow("SELECT EXISTS(SELECT cookie FROM users WHERE cookie=$1);",
-				cookie).Scan(&isPresent)
-			checkError(err)
-			if !isPresent {
-				break
+			cookie := RandStringRunes(30)
+			_, err = db.Query("INSERT INTO users VALUES($1,$2,$3,$4,$5);", username, date.Format("01/02/2006"), string(hashed_password), string(phone_number), cookie)
+			if err != nil {
+				if strings.Contains(err.Error(),"\"users_pkey\"") {
+					fmt.Fprint(w,"username already used")
+					break;
+				} else if strings.Contains(err.Error(),"\"users_phone_nr_key\""){
+					fmt.Fprint(w,"number already used")
+					break;
+				} else if strings.Contains(err.Error(),"\"users_cookie_key\"") {
+					continue;
+				} else if strings.Contains(err.Error(),"\"users_phone_nr_check\"") {
+					fmt.Fprint(w,"insert valid phone number")
+				}
+			} else{
+				expiration := time.Now().Add(365 * 24 * time.Hour)
+				newCookie := http.Cookie{
+					Name: "session",
+					Value:cookie,
+					Path:"/",
+					Expires:expiration,
+					}
+				w.Header().Add("Set-Cookie",newCookie.String())
+				http.Redirect(w, r, "/form/", 303)
+				break;
 			}
+			checkError(err)
+
 		}
-
-
-		db.QueryRow("INSERT INTO users VALUES($1,$2,$3);", username,string(hashed_password),cookie)
-		http.Redirect(w, r, "/form/", 303)
 	}
 
 }
@@ -147,11 +245,14 @@ func main() {
 	http.HandleFunc("/source/",
 		NoDirFunction(http.StripPrefix("/source/",
 			http.FileServer(http.Dir("./res/html/source/")))))
+	http.HandleFunc("/user/",ServeUsers)
+	http.HandleFunc("/team/",ServeTeam)
 	http.HandleFunc("/form/",ServeStaticPage("res/html/static/form.html"))
 	http.HandleFunc("/thankyou/",ServeThanks)
 	http.HandleFunc("/test/",ServeTest)
 	http.HandleFunc("/signup/",ServeSignUp)
-	http.HandleFunc("/",ServeLogin)
+	http.HandleFunc("/login/",ServeLogin)
+	http.HandleFunc("/logout/",ServeLogout)
 	err = http.ListenAndServe(":9090", nil) // set listen port
 	checkError(err)
 }
