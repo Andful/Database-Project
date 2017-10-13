@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.UserName}}</title>
+    {{template "res/html/components/include_css.html"}}
+</head>
+<body>
+<ul>
+    <li>user name: {{.UserName}}</li>
+    <li>phone number: {{.PhoneNumber}}</li>
+    <li>date login: {{.DateJoined.Format "02/01/2006" }}</li>
+</ul>
+{{template "res/html/components/include_js.html"}}
+</body>
+</html>
