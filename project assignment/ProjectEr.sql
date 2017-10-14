@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS Is_Moderated_By CASCADE;
 
 CREATE TABLE Team(
 Team_ID BIGSERIAL PRIMARY KEY,
-Mgr_ID BIGSERIAL,
+Mgr_ID BIGSERIAL UNIQUE,
 Mgr_Start_Date DATE);
 
 CREATE TABLE Users(
@@ -27,30 +27,30 @@ CREATE TABLE Customer(User_Name TEXT REFERENCES Users);
 CREATE TABLE Employee(
 User_Name TEXT REFERENCES Users,
 Team_ID BIGSERIAL REFERENCES Team,
-Employee_ID BIGSERIAL PRIMARY KEY,
+Employee_ID BIGSERIAL PRIMARY KEY CHECK (Employee_ID>=0),
 Name TEXT,
 Address TEXT /*TODO: check legal address*/,
-Salary SERIAL,
-Schedule TEXT/*TODO: define type*/);
+Salary BIGINT CHECK (Salary>=0),
+Schedule TEXT);
 
-CREATE TABLE Moderator(Employee_ID BIGSERIAL PRIMARY KEY REFERENCES Employee);
+CREATE TABLE Moderator(Employee_ID BIGINT PRIMARY KEY REFERENCES Employee);
 
 CREATE TABLE Specialist(
-Employee_ID BIGSERIAL REFERENCES Employee,
+Employee_ID BIGINT REFERENCES Employee,
 Speciality TEXT);
 
-CREATE TABLE Manager(Employee_ID BIGSERIAL REFERENCES Employee);
+CREATE TABLE Manager(Employee_ID BIGINT REFERENCES Employee);
 
 CREATE TABLE Topic(
 Managing_Team_ID BIGSERIAL REFERENCES Team,
-Topic_ID BIGSERIAL PRIMARY KEY,
-Description TEXT,
-Number_Of_Threads SERIAL);
+Title TEXT PRIMARY KEY,
+Description TEXT);
 
 CREATE TABLE Thread(
-Creator TEXT REFERENCES Users,
-Topic_ID BIGSERIAL REFERENCES Topic,
 Thread_ID BIGSERIAL PRIMARY KEY,
+Creator TEXT REFERENCES Users,
+Topic_Title TEXT REFERENCES Topic,
+Title TEXT,
 Description TEXT,
 Date_Created DATE);
 
@@ -58,7 +58,8 @@ CREATE TABLE Message(
 Creator TEXT REFERENCES Users,
 Thread_ID BIGSERIAL REFERENCES Thread,
 Message_ID BIGSERIAL PRIMARY KEY,
-Type TEXT, Time DATE,
+/*Type TEXT,*/ /*WHY??*/
+Time DATE,
 Content TEXT);
 
 CREATE TABLE Is_Moderated_By(

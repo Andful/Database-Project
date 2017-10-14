@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topics</title>
+    {{template "meta"}}
+    {{template "include_css"}}
+</head>
+<body>
+{{template "navbar" .Current}}
+    <h2>Topics</h2>
+    <p>
+        <ul>
+        {{range .Topics}}
+        <li><a href="/topic/{{.}}">{{.}}</a></li>
+        {{end}}
+        </ul>
+    </p>
+{{template "include_js"}}
+</body>
+</html>

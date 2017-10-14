@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topics</title>
+    {{template "meta"}}
+    {{template "include_css"}}
+</head>
+<body>
+{{template "navbar" .Current}}
+    <h2>{{.Topic.Title}}</h2>
+    <p>{{.Topic.Description}}</p>
+    {{if .Current}}
+    <form id="post_question" method="POST">
+        <input type="text" name="title" class="title" />
+        <br>
+        <textarea class="question" name="question" form="post_question" cols="30" rows="10"></textarea>
+        <br>
+        <input type="submit" value="submit"/>
+    </form>
+    {{end}}
+    <p>
+        <ul>
+        {{range .Threads}}
+        <li><a href="/thread/{{.Id}}">{{.Title}}</a></li>
+        {{end}}
+        </ul>
+    </p>
+{{template "include_js"}}
+</body>
+</html>

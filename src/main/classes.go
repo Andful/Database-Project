@@ -2,6 +2,29 @@ package main
 
 import "time"
 
+type Message struct {
+	Creator string
+	ThreadId uint32
+	MessageId uint32
+	Time time.Time
+	Content string
+}
+
+type Thread struct {
+	Creator string
+	TopicTitle string
+	Id uint32
+	Title string
+	Description string
+	DateCreated time.Time
+}
+
+type Topic struct {
+	ManagingTeamId uint32
+	Title string
+	Description string
+}
+
 type User struct {
 	UserName string
 	PhoneNumber string

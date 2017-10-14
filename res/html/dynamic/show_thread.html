@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {{template "meta"}}
+    {{template "include_css"}}
+</head>
+<body>
+<div class="description">
+author: <a href="/user/{{.Thread.Creator}}">{{.Thread.Creator}}</a>
+</div>
+{{template "navbar" .Current}}
+<div class="question">
+<h1>{{.Thread.Title}}</h1>
+<p>{{.Thread.Description}}</p>
+</div>
+
+<div id="commentbox">
+    <div id="comments">
+        {{range .Messages}}
+        <p class="comment"><a href="/user/{{.Creator}}">{{.Creator}}</a>: {{.Content}}</p>
+        {{end}}
+    </div>
+    {{if .Current}}
+        <input id="content" type="text">
+        <input type="button" onclick="send_message()">
+    {{end}}
+</div>
+{{template "include_js"}}
+<script type="text/javascript" src="/source/js/send_message.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"runtime/debug"
 )
 
 func ServeStaticPage(filename string) func (http.ResponseWriter,*http.Request) {
@@ -18,6 +19,7 @@ func ServeStaticPage(filename string) func (http.ResponseWriter,*http.Request) {
 
 func checkError(err error) {
 	if err != nil {
+		debug.PrintStack()
 		log.Fatal("error: ", err)
 	}
 }

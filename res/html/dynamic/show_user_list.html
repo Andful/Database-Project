@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    {{template "meta"}}
+    {{template "include_css"}}
+</head>
+<body>
+{{template "navbar" .Current}}
+<h2>Users</h2>
+<ul>
+{{range .Users}}
+    <li><a href="/user/{{.UserName}}">{{.UserName}}</a></li>
+{{end}}
+</ul>
+{{template "include_js"}}
+</body>
+</html>
