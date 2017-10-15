@@ -28,6 +28,29 @@ author: <a href="/user/{{.Thread.Creator}}">{{.Thread.Creator}}</a>
     {{end}}
 </div>
 {{template "include_js"}}
-<script type="text/javascript" src="/source/js/send_message.js"></script>
+<script>
+    textField=$('#content');
+
+    function send_message(){
+        var http = new XMLHttpRequest();
+        var url = window.location.href;
+
+        var content = textField.val();
+        textField.val('');
+        $('#comments').append('<p class="comment"><a href="/user/{{.Current.UserName}}">{{.Current.UserName}}</a>: '+content+'</p>');
+        http.open("POST", url, true);
+
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.send('content='+content);
+    }
+
+    textField.onkeydown = function(event) {
+        var e = event || window.event;
+
+        if (e.keyCode === 13) {
+            send_message()
+        }
+    }
+</script>
 </body>
 </html>
