@@ -12,8 +12,10 @@ DROP TABLE IF EXISTS Is_Moderated_By CASCADE;
 
 CREATE TABLE Team(
 Team_ID BIGSERIAL PRIMARY KEY,
-Mgr_ID BIGSERIAL UNIQUE,
+Mgr_ID BIGSERIAL,
 Mgr_Start_Date DATE);
+
+ALTER TABLE Team ALTER COLUMN Mgr_ID DROP NOT NULL;
 
 CREATE TABLE Users(
 User_Name TEXT PRIMARY KEY,
@@ -21,8 +23,6 @@ Date_Joined DATE,
 Password TEXT,
 Phone_Nr CHAR(10) CHECK (LENGTH(Phone_Nr)=10 AND Phone_Nr ~ '^[0-9\+]+$'),
 Cookie CHAR(30) UNIQUE);
-
-CREATE TABLE Customer(User_Name TEXT REFERENCES Users);
 
 CREATE TABLE Employee(
 User_Name TEXT REFERENCES Users,
@@ -32,6 +32,9 @@ Name TEXT,
 Address TEXT /*TODO: check legal address*/,
 Salary BIGINT CHECK (Salary>=0),
 Schedule TEXT);
+
+CREATE TABLE Customer(User_Name TEXT REFERENCES Users);
+
 
 CREATE TABLE Moderator(Employee_ID BIGINT PRIMARY KEY REFERENCES Employee);
 
