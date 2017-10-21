@@ -26,6 +26,70 @@ func ServeThreadList(w http.ResponseWriter,r *http.Request) {
 
 }
 
+func ServeHome(w http.ResponseWriter,r *http.Request) {
+	templ, err := template.ParseFiles(
+		"res/html/dynamic/home.html",
+		"res/html/components/include_css.html",
+		"res/html/components/include_js.html",
+		"res/html/components/navbar.html",
+		"res/html/components/meta.html",
+	)
+	checkError(err)
+
+	err = templ.Execute(w,GetUserFromRequest(r))
+	checkError(err)
+}
+
+func ServeMessageList(w http.ResponseWriter,r *http.Request) {
+
+	var data struct {
+		Current *User
+		MessageThreads []MessageThread
+	}
+
+	data.Current = GetUserFromRequest(r)
+	data.MessageThreads = GetMessageThread()
+
+	templ, err := template.ParseFiles(
+		"res/html/dynamic/show_messages.html",
+		"res/html/components/include_css.html",
+		"res/html/components/include_js.html",
+		"res/html/components/navbar.html",
+		"res/html/components/meta.html",
+	)
+	checkError(err)
+
+	err = templ.Execute(w,data)
+	checkError(err)
+}
+
+func ServeEmployee(w http.ResponseWriter,r *http.Request) {
+	r.ParseForm()
+	if(r.Method=="GET") {
+		var data struct {
+			Current *User
+			Employees []Employee
+		}
+
+		data.Current=GetUserFromRequest(r)
+		data.Employees = GetEmployeeNameSpecialitySchedule()
+
+		fmt.Println(len(data.Employees))
+
+		templ, err := template.ParseFiles(
+			"res/html/dynamic/show_employees.html",
+			"res/html/components/include_css.html",
+			"res/html/components/include_js.html",
+			"res/html/components/navbar.html",
+			"res/html/components/meta.html",
+		)
+		checkError(err)
+
+		err = templ.Execute(w,data)
+		checkError(err)
+	}
+}
+
 func ServeThread(w http.ResponseWriter,r *http.Request) {
 	r.ParseForm()
 	if(r.Method=="GET") {
@@ -74,6 +138,8 @@ func ServeThread(w http.ResponseWriter,r *http.Request) {
 			threadId=uint32(threadId64)
 		}
 		date :=time.Now()
+
+		fmt.Println(date)
 
 		message := Message{
 			Creator:current.UserName,
@@ -442,6 +508,9 @@ func main() {
 	http.HandleFunc("/logout/",ServeLogout)
 	http.HandleFunc("/topic/",ServeTopic)
 	http.HandleFunc("/thread/",ServeThread)
+	http.HandleFunc("/employee/",ServeEmployee)
+	http.HandleFunc("/message/",ServeMessageList)
+	http.HandleFunc("/",ServeHome)
 	err = http.ListenAndServe(":9090", nil) // set listen port
 	checkError(err)
 }

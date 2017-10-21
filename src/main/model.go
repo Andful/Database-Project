@@ -30,6 +30,42 @@ func SetMessage(message Message){
 	checkError(err)
 }
 
+func GetMessageThread() []MessageThread {
+	var result []MessageThread
+
+	rows,err := db.Query("SELECT thread_id, title, content " +
+		"FROM messages_and_threads")
+	checkError(err)
+
+	for rows.Next() {
+		var mt MessageThread
+		rows.Scan(&mt.Thread.Id,&mt.Thread.Title,&mt.Message.Content)
+
+		result =  append(result, mt)
+	}
+
+	return result
+}
+
+func GetEmployeeNameSpecialitySchedule() []Employee{
+	var result []Employee
+	rows,err := db.Query("SELECT user_name, speciality, schedule FROM specialists_info")
+	checkError(err)
+
+	for rows.Next() {
+		var emp Employee
+
+		err = rows.Scan(&emp.User.UserName,
+			&emp.Speciality,
+			&emp.Schedule,
+		)
+
+		result = append(result,emp)
+	}
+
+	return result
+}
+
 func GetMessageFromThread(thread Thread) []Message {
 	rows,err := db.Query(
 		"SELECT " +

@@ -2,6 +2,11 @@ package main
 
 import "time"
 
+type MessageThread struct {
+	Message Message
+	Thread Thread
+}
+
 type Message struct {
 	Creator string
 	ThreadId uint32
@@ -39,6 +44,7 @@ type Employee struct {
 	Address string
 	Salary uint32
 	Schedule string
+	Speciality *string
 }
 
 type Team struct {

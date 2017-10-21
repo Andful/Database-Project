@@ -8,15 +8,15 @@ INSERT INTO users VALUES ('customer2', '2017-10-16', '$2a$10$3T3tgynbUATHUVgp1Vf
 INSERT INTO users VALUES ('customer3', '2017-10-17', '$2a$10$UL9gLJ9/hLVkLK0beffqAegseW5vxE8I9FduDBUn4qIIqXUeTGijm', '0000011111', 'EWoPnVIFQQWQtoW3owXvUA6mSkOBha');
 INSERT INTO users VALUES ('customer4', '2017-10-17', '$2a$10$EI8oHCemuXaQg9gsziexaucEdSsorHnn17qiEyFAF.uOWodc3T1ly', '1010100101', 'DxIuLNGYMEFSXNPyBGq2veDw29YrPa');
 
-INSERT INTO Team VALUES (1,NULL,'10/10/2010');
-INSERT INTO Team VALUES (2,NULL,'10/10/2010');
-INSERT INTO Team VALUES (3,NULL,'10/10/2010');
-INSERT INTO Team VALUES (4,NULL,'10/10/2010');
+INSERT INTO Team(mgr_start_date) VALUES ('10/10/2010');
+INSERT INTO Team(mgr_start_date) VALUES ('10/10/2010');
+INSERT INTO Team(mgr_start_date) VALUES ('10/10/2010');
+INSERT INTO Team(mgr_start_date) VALUES ('10/10/2010');
 
-INSERT INTO Employee VALUES ('andrea',  1 , 1, 'andrea', 'address 12', 3000, 'busy' );
-INSERT INTO Employee VALUES ('ryan',  1 , 2, 'ryan', 'address 22', 3000, 'schedule' );
-INSERT INTO Employee VALUES ('anton',  1 , 3, 'anton', 'address 14', 3000, 'schedule' );
-INSERT INTO Employee VALUES ('anton2',  1 , 4, 'anton', 'address 16', 3000, 'schedule' );
+INSERT INTO Employee(user_name, team_id, name, address, salary, schedule) VALUES ('andrea',  1 , 'andrea', 'address 12', 3000, 'busy' );
+INSERT INTO Employee(user_name, team_id, name, address, salary, schedule) VALUES ('ryan',  1 , 'ryan', 'address 22', 3000, 'schedule' );
+INSERT INTO Employee(user_name, team_id, name, address, salary, schedule) VALUES ('anton',  1 , 'anton', 'address 14', 3000, 'schedule' );
+INSERT INTO Employee(user_name, team_id, name, address, salary, schedule) VALUES ('anton2',  1 , 'anton', 'address 16', 3000, 'schedule' );
 
 INSERT INTO Customer VALUES ('customer1');
 INSERT INTO Customer VALUES ('customer2');
@@ -43,15 +43,15 @@ INSERT INTO Topic VALUES (1,'database2','data');
 INSERT INTO Topic VALUES (1,'database3','data');
 INSERT INTO Topic VALUES (1,'database4','data');
 
-INSERT INTO Thread VALUES (1,'andrea','database','How to basic','hello','10/10/2010');
-INSERT INTO Thread VALUES (2,'andrea','database','How to basic','hello','10/10/2010');
-INSERT INTO Thread VALUES (3,'andrea','database','How to basic','hello','10/10/2010');
-INSERT INTO Thread VALUES (4,'andrea','database','How to basic','hello','10/10/2010');
+INSERT INTO Thread(creator, topic_title, title, description, date_created) VALUES ('andrea','database','How to basic','hello','10/10/2010');
+INSERT INTO Thread(creator, topic_title, title, description, date_created) VALUES ('andrea','database','How to basic','hello','10/10/2010');
+INSERT INTO Thread(creator, topic_title, title, description, date_created) VALUES ('andrea','database','How to basic','hello','10/10/2010');
+INSERT INTO Thread(creator, topic_title, title, description, date_created) VALUES ('andrea','database','How to basic','hello','10/10/2010');
 
-INSERT INTO Message VALUES ('andrea',1,1,'10/10/2010','hello');
-INSERT INTO Message VALUES ('andrea',1,2,'10/10/2010','hello');
-INSERT INTO Message VALUES ('andrea',1,3,'10/10/2010','hello');
-INSERT INTO Message VALUES ('andrea',1,4,'10/10/2010','hello');
+INSERT INTO Message(creator,thread_id,time,content) VALUES ('andrea',1,'10/10/2010','hello');
+INSERT INTO Message(creator,thread_id,time,content) VALUES ('andrea',1,'10/10/2010','hello');
+INSERT INTO Message(creator,thread_id,time,content) VALUES ('andrea',1,'10/10/2010','hello');
+INSERT INTO Message(creator,thread_id,time,content) VALUES ('andrea',1,'10/10/2010','hello');
 
 INSERT INTO Is_Moderated_By VALUES (1,1);
 INSERT INTO Is_Moderated_By VALUES (2,2);

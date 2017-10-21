@@ -14,11 +14,11 @@
     <li>phone number: {{$selected.PhoneNumber}}</li>
     <li>date login: {{$selected.DateJoined.Format "02/01/2006" }}</li>
     {{if .Employee}}
-    <li>name:{{.Employee.Name}}</li>
+    <li>name: {{.Employee.Name}}</li>
     <li>team: <a href="/team/{{.Employee.TeamId}}">{{.Employee.TeamId}}</a></li>
-    <li>id:{{.Employee.Id}}</li>
-    <li>address:{{.Employee.Address}}</li>
-    <li>salary:{{.Employee.Salary}}</li>
+    <li>id: {{.Employee.Id}}</li>
+    <li>address: {{.Employee.Address}}</li>
+    <li>salary: {{.Employee.Salary}}</li>
     <h3>Schedule</h3>
     <p>{{.Employee.Schedule}}</p>
     {{end}}

@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Employees</title>
+    {{template "meta"}}
+    {{template "include_css"}}
 </head>
 <body>
-$END$
+{{template "navbar" .Current}}
+<ul>
+{{range .Employees}}
+    <li><a href="/user/{{.User.UserName}}">{{.User.UserName}}</a>{{if .Speciality}}, specialized in {{.Speciality}}{{end}}. Schedule: {{.Schedule}}</li>
+{{end}}
+</ul>
+{{template "include_js"}}
 </body>
 </html>

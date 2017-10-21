@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Latest Messages</title>
+    {{template "meta"}}
+    {{template "include_css"}}
 </head>
 <body>
-$END$
+{{template "navbar" .Current}}
+<ul>
+    {{range .MessageThreads}}
+    <li><a href="/thread/{{.Thread.Id}}/">{{.Thread.Title}}</a>: {{.Message.Content}}</li>
+    {{end}}
+</ul>
+{{template "include_js"}}
 </body>
 </html>
