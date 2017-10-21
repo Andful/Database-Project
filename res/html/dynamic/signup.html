@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign up</title>
+    {{template "meta"}}
+    {{template "include_css"}}
 </head>
 <body>
+{{template "navbar"}}
 <form action="/signup/" method="POST">
     <label>
         username:
@@ -23,5 +26,6 @@
     <br>
     <input type="submit" value="sign up" />
 </form>
+{{template "include_js"}}
 </body>
 </html>

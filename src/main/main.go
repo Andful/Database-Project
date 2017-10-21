@@ -278,11 +278,19 @@ func ServeLogin(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 	if(r.Method=="GET"){
-		cookie,err:=r.Cookie("session")
-		fmt.Println(cookie)
-		dat,err :=ioutil.ReadFile("res/html/static/login.html")
-		checkError(err)
-		fmt.Fprint(w,string(dat))
+		user:=GetUserFromRequest(r)
+		if(user == nil) {
+			templ,err := template.ParseFiles("res/html/dynamic/login.html",
+				"res/html/components/include_css.html",
+				"res/html/components/include_js.html",
+				"res/html/components/navbar.html",
+				"res/html/components/meta.html",
+			)
+			checkError(err)
+			templ.Execute(w, nil)
+		} else {
+			http.Redirect(w,r,"/topic/",303)
+		}
 	} else if(r.Method=="POST") {
 		username := r.FormValue("username")
 		password := []byte(r.FormValue("password"))
@@ -309,7 +317,7 @@ func ServeLogin(w http.ResponseWriter, r *http.Request) {
 					Expires:expiration,
 				}
 				w.Header().Add("Set-Cookie",newCookie.String())
-				http.Redirect(w, r, "/form/", 303)
+				http.Redirect(w, r, "/topic/", 303)
 			}
 		}
 	}
@@ -318,9 +326,20 @@ func ServeLogin(w http.ResponseWriter, r *http.Request) {
 func ServeSignUp(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	if(r.Method=="GET") {
-		dat,err :=ioutil.ReadFile("res/html/static/signup.html")
-		checkError(err)
-		fmt.Fprint(w,string(dat))
+		user:=GetUserFromRequest(r)
+		if(user == nil) {
+			templ,err := template.ParseFiles("res/html/dynamic/signup.html",
+				"res/html/components/include_css.html",
+				"res/html/components/include_js.html",
+				"res/html/components/navbar.html",
+				"res/html/components/meta.html",
+			)
+			checkError(err)
+			err = templ.Execute(w, nil)
+			checkError(err)
+		} else {
+			http.Redirect(w,r,"/topic/",303)
+		}
 	} else if(r.Method=="POST") {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
@@ -353,7 +372,7 @@ func ServeSignUp(w http.ResponseWriter, r *http.Request) {
 					Expires:expiration,
 					}
 				w.Header().Add("Set-Cookie",newCookie.String())
-				http.Redirect(w, r, "/form/", 303)
+				http.Redirect(w, r, "/topic/", 303)
 				break;
 			}
 			checkError(err)

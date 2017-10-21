@@ -268,7 +268,10 @@ func GetUserList() []User{
 
 func GetUserFromRequest(r *http.Request) *User{
 	cookie,err :=r.Cookie("session")
-	checkError(err)
+	if err != nil {
+		return nil
+	}
+	//checkError(err)
 	return GetUserFromSession(cookie.Value)
 }
 
